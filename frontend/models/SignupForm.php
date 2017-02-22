@@ -1,9 +1,9 @@
 <?php
 namespace frontend\models;
 
-use common\models\User;
-use yii\base\Model;
-use Yii;
+use common\models\UserModel;
+//use yii\base\Model;
+//use Yii;
 
 /**
  * Signup form
@@ -13,6 +13,10 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    public $rePassword;
+    public $verifyCode;
+    
+    
 
     /**
      * @inheritdoc
@@ -22,17 +26,19 @@ class SignupForm extends Model
         return [
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'unique', 'targetClass' => '\common\models\UserModel', 'message' =>Yii::t('common','This username has already been taken.')],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => '\common\models\UserModel', 'message' => Yii::t('common','This email address has already been taken.')],
 
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            [['password','rePassword'], 'required'],
+            [['password','rePassword'], 'string', 'min' => 6],
+            ['rePassword','compare','compareAttribute'=>'password','message'=>Yii::t('common','Two times the password are not consistent.')],
+            ['verifyCode','captcha'],
         ];
     }
     public function attributeLabels() {
@@ -40,6 +46,8 @@ class SignupForm extends Model
             'username' => '用户名',
             'email' => '邮箱',
             'password' => '密码',
+            'rePassword'=> '重复密码',
+            'verifyCode'=>'验证码',
         ];
     }
     /**
