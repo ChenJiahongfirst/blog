@@ -36,7 +36,7 @@ AppAsset::register($this);
     ]);
     $leftMeuns = [
         ['label' => '首页', 'url' => ['/site/index']],
-        ['label' => '文章', 'url' => ['/post/about']],
+        ['label' => '文章', 'url' => ['/post/index']],
     ];
     if (Yii::$app->user->isGuest) {
         $rightMeuns[] = ['label' => Yii::t('common', 'Signup'), 'url' => ['/site/signup']];
