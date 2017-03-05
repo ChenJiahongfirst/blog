@@ -16,14 +16,28 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php $form = ActiveForm::begin() ?>
 
             <?= $form->field($model, 'title')->textinput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'cat_id')->dropDownList(['1' =>'分类1','2' =>'分类2']) ?>
-            <?= $form->field($model, 'label_img')->textinput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'content')->textinput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'tags')->textinput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'cat_id')->dropDownList($cats) ?>
+            <!--标签图上传-->
+            <?=
+            $form->field($model, 'label_img')->widget('common\widgets\file_upload\FileUpload', [
+                'config' => [
+                ]
+            ])
+            ?>
+            <!--富文本编辑器-->
+            <?=
+            $form->field($model, 'content')->widget('common\widgets\ueditor\Ueditor', [
+                'options' => [
+                    'initialFrameHeight' => 400,
+                ]
+            ])
+            ?>
+            <!--标签-->
+                <?= $form->field($model, 'tags')->widget('common\widgets\tags\TagWidget') ?>
             <div class="form-group">
-                <?= Html::submitButton("发布", ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton("发布", ['class' => 'btn btn-success']) ?>
             </div>
-            <?php ActiveForm::end() ?>
+<?php ActiveForm::end() ?>
         </div>
     </div>
     <div class="col-lg-3">
