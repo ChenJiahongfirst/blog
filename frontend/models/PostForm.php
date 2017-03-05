@@ -5,11 +5,10 @@ use yii\base\Model;
 class PostForm extends Model{
     public  $id;
     public $title;
-    public $content;
-    public $label_img;
     public $cat_id;
-    public $tags;
-    
+    public $label_img;
+    public $content;
+    public $tags;  
     public $_lasterror="";
     
     public function rules() {
@@ -24,8 +23,9 @@ class PostForm extends Model{
         return[
             'id'=>'编码',
             'title'=>'标题',
-            'content'=>'内容',
+            'cat_id'=>'分类',
             'label_img'=>'标签图',
+            'content'=>'内容',
             'tags'=>'标签',
         ];
     }
