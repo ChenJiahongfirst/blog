@@ -1,5 +1,4 @@
 <?php
-
 namespace frontend\controllers;
 
 //文章控制器
@@ -9,7 +8,7 @@ use frontend\models\PostForm;
 use common\models\CatsModel;
 
 class PostController extends BaseController {
-
+//一些组件的配置
     public function actions() {
         return [
             'upload' => [
@@ -37,6 +36,17 @@ class PostController extends BaseController {
     //文章创建页
     public function actionCreate() {
         $model = new PostForm();
+        
+        //定义场景
+        $model->setScenario(PostForm::SCENARIOS_CREATE);
+                if($model->load(Yii::$app->request->post())&&$model->validate()){
+            if(!$model->create()){
+                Yii::$app->session->setFlash('warning',$model->_lastError);
+            }else{
+                return $this->redirect(['post/view', 'id'=>$model->id]);
+            }
+        }
+        
         //获取文章分类
         $cats = CatsModel::getAllCats();
         return $this->render('create', ['model' => $model, 'cats' => $cats]);

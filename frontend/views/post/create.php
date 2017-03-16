@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php $form = ActiveForm::begin() ?>
 
             <?= $form->field($model, 'title')->textinput(['maxlength' => true]) ?>
+            <!--分类-->
             <?= $form->field($model, 'cat_id')->dropDownList($cats) ?>
             <!--标签图上传-->
             <?=

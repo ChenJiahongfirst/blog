@@ -11,6 +11,23 @@ class PostForm extends Model{
     public $tags;  
     public $_lasterror="";
     
+    /*
+     *  创建场景
+     * SCENARIOS_CREATE创建
+     * SCENARIOS_UPDATE更新    
+     */
+    const SCENARIOS_CREATE='create';
+    const SCENARIOS_UPDATE='update';
+    
+//    场景设置
+    public function scenarios() {
+        $scenarios=[
+        self::SCENARIOS_CREATE=>['title','cate','label_img','content','tags'],
+            self::SCENARIOS_UPDATE=>['title','cate','label_img','content','tags'],
+        ];
+        return array_merge(parent::scenarios(),$scenarios);
+    }
+
     public function rules() {
         return[
             [['id','title','content','cat_id'],'required'],
