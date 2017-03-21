@@ -1,49 +1,102 @@
 <?php
+
 namespace frontend\models;
+
 //文章表单模型
+use Yii;
 use yii\base\Model;
-class PostForm extends Model{
-    public  $id;
+use common\models\PostModel;
+
+class PostForm extends Model {
+
+    public $id;
     public $title;
     public $cat_id;
     public $label_img;
     public $content;
-    public $tags;  
-    public $_lasterror="";
-    
+    public $tags;
+    public $_lastError = "";
+
     /*
      *  创建场景
      * SCENARIOS_CREATE创建
      * SCENARIOS_UPDATE更新    
      */
-    const SCENARIOS_CREATE='create';
-    const SCENARIOS_UPDATE='update';
-    
+
+    const SCENARIOS_CREATE = 'create';
+    const SCENARIOS_UPDATE = 'update';
+
 //    场景设置
     public function scenarios() {
-        $scenarios=[
-        self::SCENARIOS_CREATE=>['title','cate','label_img','content','tags'],
-            self::SCENARIOS_UPDATE=>['title','cate','label_img','content','tags'],
+        $scenarios = [
+            self::SCENARIOS_CREATE => ['title', 'cate', 'label_img', 'content', 'tags'],
+            self::SCENARIOS_UPDATE => ['title', 'cate', 'label_img', 'content', 'tags'],
         ];
-        return array_merge(parent::scenarios(),$scenarios);
+        return array_merge(parent::scenarios(), $scenarios);
     }
 
     public function rules() {
         return[
-            [['id','title','content','cat_id'],'required'],
-            [['id','cat_id'],'integer'],
-            ['title','string','min'=>4,'max'=>50],
+                [['id', 'title', 'content', 'cat_id'], 'required'],
+                [['id', 'cat_id'], 'integer'],
+                ['title', 'string', 'min' => 4, 'max' => 50],
         ];
     }
-    
+
     public function attributeLabels() {
         return[
-            'id'=>'编码',
-            'title'=>'标题',
-            'cat_id'=>'分类',
-            'label_img'=>'标签图',
-            'content'=>'内容',
-            'tags'=>'标签',
+            'id' => '编码',
+            'title' => '标题',
+            'cat_id' => '分类',
+            'label_img' => '标签图',
+            'content' => '内容',
+            'tags' => '标签',
         ];
     }
+
+    //文章创建
+    public function create() {
+        //事务（保证数据的完整性）
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model = new PostModel();
+            $model->setAttributes($this->attributes);
+            $model->summary = $this->_getSummary();
+            $model->user_id = Yii::$app->user->identity->id;
+            $model->user_name = Yii::$app->user->identity->username;
+            $model->is_valid= PostModel::IS_VALID;
+            $model->created_at = time();
+            $model->updated_at = time();
+            if (!$model->save()) {
+                throw new Exception('文章保存失败');
+            }//
+            $this->id = $model->id;
+            //调用事件
+            $this->_eventAfterCreate();
+            $transaction->commit();
+            return true;
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            $this->_lastError = $e->getMessage();
+            return false;
+        }
+    }
+
+//截取文章摘要
+    private function _getSummary($s = 0, $e = 90, $char = 'utf-8') {
+        if (empty($this->content)) {
+            return null;
+        }
+        return (mb_substr(str_replace('&nbsp;', '', strip_tags($this->content)), $s, $e, $char));
+    }
+    
+    //创建完成后调用的事件方法
+    private function _eventAfterCreate(){
+        
+    }
+    
+    
+    
+    
+
 }
