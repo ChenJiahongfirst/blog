@@ -21,10 +21,14 @@ class PostForm extends Model {
      *  创建场景
      * SCENARIOS_CREATE创建
      * SCENARIOS_UPDATE更新    
+     * EVENT_AFTER_CREATE创建之后的事件
+     * EVENT_AFTER_UPDATE更新之后的事件
      */
 
     const SCENARIOS_CREATE = 'create';
     const SCENARIOS_UPDATE = 'update';
+    const EVENT_AFTER_CREATE = 'eventAfterCreate';
+    const EVENT_AFTER_UPDATE = 'eventAfterUpdate';
 
 //    场景设置
     public function scenarios() {
@@ -64,15 +68,18 @@ class PostForm extends Model {
             $model->summary = $this->_getSummary();
             $model->user_id = Yii::$app->user->identity->id;
             $model->user_name = Yii::$app->user->identity->username;
-            $model->is_valid= PostModel::IS_VALID;
+            $model->is_valid = PostModel::IS_VALID;
             $model->created_at = time();
             $model->updated_at = time();
             if (!$model->save()) {
                 throw new Exception('文章保存失败');
             }//
             $this->id = $model->id;
+
             //调用事件
-            $this->_eventAfterCreate();
+            $data = array_merge($this->getAttributes(), $model->getAttributes());
+            $this->_eventAfterCreate($data);
+            
             $transaction->commit();
             return true;
         } catch (\Exception $e) {
@@ -89,14 +96,19 @@ class PostForm extends Model {
         }
         return (mb_substr(str_replace('&nbsp;', '', strip_tags($this->content)), $s, $e, $char));
     }
-    
+
     //创建完成后调用的事件方法
-    private function _eventAfterCreate(){
-        
+    public function _eventAfterCreate($data) {
+        //添加事件
+        $this->on(self::EVENT_AFTER_CREATE,[$this,'_eventAddTag'],$data);
+        //触发事件
+        $this->trigger(self::EVENT_AFTER_CREATE);
     }
     
-    
-    
+    //添加标签
+    public function _eventAddTag(){
+        
+    }
     
 
 }
