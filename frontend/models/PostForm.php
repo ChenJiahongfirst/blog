@@ -6,8 +6,6 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\PostModel;
-use yii\db\Query;
-use common\models\RelationPostTagModel;
 
 class PostForm extends Model {
 
@@ -35,8 +33,8 @@ class PostForm extends Model {
 //    场景设置
     public function scenarios() {
         $scenarios = [
-            self::SCENARIOS_CREATE => ['title', 'cat_id', 'label_img', 'content', 'tags'],
-            self::SCENARIOS_UPDATE => ['title', 'cat_id', 'label_img', 'content', 'tags'],
+            self::SCENARIOS_CREATE => ['title', 'cate', 'label_img', 'content', 'tags'],
+            self::SCENARIOS_UPDATE => ['title', 'cate', 'label_img', 'content', 'tags'],
         ];
         return array_merge(parent::scenarios(), $scenarios);
     }
@@ -77,9 +75,11 @@ class PostForm extends Model {
                 throw new Exception('文章保存失败');
             }//
             $this->id = $model->id;
+
             //调用事件
             $data = array_merge($this->getAttributes(), $model->getAttributes());
-            $this->_eventAfterCreate($data);           
+            $this->_eventAfterCreate($data);
+            
             $transaction->commit();
             return true;
         } catch (\Exception $e) {
@@ -106,32 +106,9 @@ class PostForm extends Model {
     }
     
     //添加标签
-    public function _eventAddTag($event){
-        //保存标签
-        $tag=new TagForm();
-        $tag->tags=$event->data['tags'];
-        $tagids=$tag->saveTags();
-        //删除原先的关联关系
-       RelationPostTagModel::deleteAll(['post_id' => $event->data['id']]);
-       //批量保存文章和标签的关联关系
-        if(!empty($tagids)){
-            foreach($tagids as $k=>$id){
-                $row[$k]['post_id']=$this->$id;
-                $row[$k]['tag_id']=$id;
-            }
-            //批量保存
-            $res=(new Query())->createCommand
-                    ->batchInsert(RelationPostTagModel::tableName(),['post_id','tag_id'],$row)
-                    ->execute();
-            //保存失败返回值
-            if(!$res){
-                throw new \Exception("关联关系保存失败！");
-            }
-        }
+    public function _eventAddTag(){
+        
     }
     
 
-    
-    
-    
 }
