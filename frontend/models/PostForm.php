@@ -33,8 +33,8 @@ class PostForm extends Model {
 //    场景设置
     public function scenarios() {
         $scenarios = [
-            self::SCENARIOS_CREATE => ['title', 'cate', 'label_img', 'content', 'tags'],
-            self::SCENARIOS_UPDATE => ['title', 'cate', 'label_img', 'content', 'tags'],
+            self::SCENARIOS_CREATE => ['title', 'cat_id', 'label_img', 'content', 'tags'],
+            self::SCENARIOS_UPDATE => ['title', 'cat_id', 'label_img', 'content', 'tags'],
         ];
         return array_merge(parent::scenarios(), $scenarios);
     }
