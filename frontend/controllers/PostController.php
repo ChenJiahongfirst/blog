@@ -7,9 +7,37 @@ use Yii;
 use frontend\controllers\base\BaseController;
 use frontend\models\PostForm;
 use common\models\CatsModel;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 
 class PostController extends BaseController {
-
+    //行为过滤
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'create','upload','ueditor'],
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['create','upload','ueditor'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    '*'=>['get','post'],
+                ],
+            ],
+        ];
+    }
 //一些组件的配置
     public function actions() {
         return [
@@ -52,6 +80,10 @@ class PostController extends BaseController {
         //获取文章分类
         $cats = CatsModel::getAllCats();
         return $this->render('create', ['model' => $model, 'cats' => $cats]);
+        
     }
+    
+    
+    
 
 }
