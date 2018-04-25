@@ -15,18 +15,6 @@ return [
             'identityClass' => 'common\models\UserModel',
             'enableAutoLogin' => true,
         ],
-        //语言包的配置
-        'i18n' => [
-            'translations' => [
-                '*' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                    // 'basePath' => '/messages',
-                    'fileMap' => [
-                        'common' => 'common.php',
-                    ],
-                ],
-            ],
-        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
