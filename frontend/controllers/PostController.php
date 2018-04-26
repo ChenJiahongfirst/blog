@@ -3,28 +3,29 @@
 namespace frontend\controllers;
 
 //文章控制器
-use Yii;
+use common\models\CatsModel;
 use frontend\controllers\base\BaseController;
 use frontend\models\PostForm;
-use common\models\CatsModel;
+use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
-class PostController extends BaseController {
+class PostController extends BaseController
+{
     //行为过滤
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index', 'create','upload','ueditor'],
+                'only' => ['index', 'create', 'upload', 'ueditor'],
                 'rules' => [
                     [
                         'actions' => ['index'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['create','upload','ueditor'],
+                        'actions' => ['create', 'upload', 'ueditor'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -33,13 +34,15 @@ class PostController extends BaseController {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    '*'=>['get','post'],
+                    '*' => ['get', 'post'],
                 ],
             ],
         ];
     }
-//一些组件的配置
-    public function actions() {
+
+    //一些组件的配置
+    public function actions()
+    {
         return [
             'upload' => [
                 'class' => 'common\widgets\file_upload\UploadAction', //这里扩展地址别写错
@@ -59,12 +62,14 @@ class PostController extends BaseController {
     }
 
     //文章列表页
-    public function actionIndex() {
+    public function actionIndex()
+    {
         return $this->render('index');
     }
 
     //文章创建页
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $model = new PostForm();
 
         //定义场景
@@ -79,11 +84,12 @@ class PostController extends BaseController {
 
         //获取文章分类
         $cats = CatsModel::getAllCats();
-        return $this->render('create', ['model' => $model, 'cats' => $cats]);
-        
+        return $this->render('create', [
+            'model' => $model,
+            'cats' => $cats
+        ]);
+
     }
-    
-    
-    
+
 
 }

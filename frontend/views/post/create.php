@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
 $this->title = '创建';
 $this->params['breadcrumbs'][] = ['label' => '文章', 'url' => ['post/index']];
@@ -34,11 +34,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ])
             ?>
             <!--标签-->
-                <?= $form->field($model, 'tags')->widget('common\widgets\tags\TagWidget') ?>
+            <?= $form->field($model, 'tags')->widget('common\widgets\tags\TagWidget') ?>
             <div class="form-group">
-            <?= Html::submitButton("发布", ['class' => 'btn btn-success']) ?>
+                <?= Html::submitButton("发布", ['class' => 'btn btn-success']) ?>
             </div>
-<?php ActiveForm::end() ?>
+            <?php ActiveForm::end() ?>
         </div>
     </div>
     <div class="col-lg-3">

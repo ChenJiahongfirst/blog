@@ -1,14 +1,15 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
-use yii\helpers\Html;
+use common\widgets\Alert;
+use frontend\assets\AppAsset;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
-use frontend\assets\AppAsset;
-use common\widgets\Alert;
 
 AppAsset::register($this);
 ?>
@@ -28,12 +29,13 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::t('common', 'Blog'),
+        'brandLabel' => '博客',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
     $leftMeuns = [
         ['label' => '首页', 'url' => ['/site/index']],
         ['label' => '文章', 'url' => ['/post/index']],
@@ -43,10 +45,10 @@ AppAsset::register($this);
         $rightMeuns[] = ['label' => Yii::t('common', 'Login'), 'url' => ['/site/login']];
     } else {
         $rightMeuns[] = [
-            'label' => '<img src="'.Yii::$app ->params['avatar']['small'].'" alt="' . Yii::$app->user->identity->username . '">', //Logout (' . Yii::$app->user->identity->username . ')
-             'linkOptions' => ['class' => 'avatar'],
+            'label' => '<img src="' . Yii::$app->params['avatar']['small'] . '" alt="' . Yii::$app->user->identity->username . '">', //Logout (' . Yii::$app->user->identity->username . ')
+            'linkOptions' => ['class' => 'avatar'],
             'items' => [
-             [ 'label' => '<i class="fa fa-sign-out"></i>退出', 'url' => ['/site/logout'],  'linkOptions' => ['data-method' => 'post']],             
+                ['label' => '<i class="fa fa-sign-out"></i>退出', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
             ],
 
         ];
@@ -55,11 +57,12 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-left'],
         'items' => $leftMeuns,
     ]);
-        echo Nav::widget([
+    echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'encodeLabels' => false,
         'items' => $rightMeuns,
     ]);
+
     NavBar::end();
     ?>
 
